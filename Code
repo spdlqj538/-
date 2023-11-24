@@ -1,1 +1,117 @@
-ㅇㅇㅇ
+# 단계 1: 폰트 설치
+import matplotlib.font_manager as fm
+import matplotlib.pyplot as plt
+
+!apt-get -qq -y install fonts-nanum > /dev/null
+#fontpath = '/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf'
+
+fe = fm.FontEntry(
+    fname=r'/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf', # ttf 파일이 저장되어 있는 경로
+    name='NanumGothic')                        # 이 폰트의 원하는 이름 설정
+fm.fontManager.ttflist.insert(0, fe)              # Matplotlib에 폰트 추가
+plt.rcParams.update({'font.size': 11, 'font.family': 'NanumGothic'}) # 폰트 설정
+
+-------------------------------------------------------------------------------------------------------------
+
+# 단계 2: 런타임 재시작
+import os
+os.kill(os.getpid(), 9)
+
+-------------------------------------------------------------------------------------------------------------
+
+# 단계 3: 한글 폰트 설정
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import matplotlib.font_manager as fm
+
+# 마이너스 표시 문제
+mpl.rcParams['axes.unicode_minus'] = False
+
+# 한글 폰트 설정
+fe = fm.FontEntry(
+    fname=r'/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf', # ttf 파일이 저장되어 있는 경로
+    name='NanumGothic')                        # 이 폰트의 원하는 이름 설정
+fm.fontManager.ttflist.insert(0, fe)              # Matplotlib에 폰트 추가
+plt.rcParams.update({'font.size': 11, 'font.family': 'NanumGothic'}) # 폰트 설정
+
+-------------------------------------------------------------------------------------------------------------
+
+#데이터 살펴보기
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("/content/crime.csv", encoding='cp949', usecols=[0,1,2,3,4,10,11,12])
+print(df)
+
+-------------------------------------------------------------------------------------------------------------
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 데이터 불러오기
+df = pd.read_csv("/content/crime.csv", encoding='cp949')
+
+# '경기 고양'부터 '경기 화성'까지의 열 선택하여 합치기 (다른 지역도 마찬가지로 합치기)
+gyeonggi_values = df.loc[:, '경기 고양':'경기 화성'].sum(axis=1)
+
+kangwon_values = df.loc[:, '강원 강릉':'강원 태백'].sum(axis=1)
+chung_values = df.loc[:, '충북 제천':'충남 천안'].sum(axis=1)
+jeonla_values = df.loc[:, '전북 군산':'전남 여수'].sum(axis=1)
+gyeongsang_values = df.loc[:, '경북 경산':'경남 통영'].sum(axis=1)
+jeju_values = df.loc[:, '제주 서귀포':'제주 제주'].sum(axis=1)
+
+# '경기도'라는 이름의 열로 데이터프레임에 추가 (추가되는 열들을 계속해서 데이터프레임에 추가)
+df['경기도'] = gyeonggi_values
+
+df['강원도'] = kangwon_values
+df['전라도'] = jeonla_values
+df['경상도'] = gyeongsang_values
+df['제주도'] = jeju_values
+
+# 결과 확인 (경기도 ~ 제주도)
+print(df['경기도'])
+
+# -- 서울 -- #
+plt.figure(figsize=(50, 6))
+ax = sns.barplot(data=df, x='범죄중분류', y="서울")
+
+for p in ax.patches :
+  ax.annotate(str(int(p.get_height())), (p.get_x() + p.get_width() / 2.,p.get_height()), ha='center', va='center', xytext=(0, 9), textcoords = 'offset points')
+
+# -- 서울 END -- #
+
+# -- 경기도 -- #
+plt.figure(figsize=(50, 6))
+ax = sns.barplot(data=df, x='범죄중분류', y="경기도")
+
+for p in ax.patches :
+  ax.annotate(str(int(p.get_height())), (p.get_x() + p.get_width() / 2.,p.get_height()), ha='center', va='center', xytext=(0, 9), textcoords = 'offset points')
+
+plt.figure(figsize=(50, 6))
+ax = sns.barplot(data=df, x='범죄중분류', y="강원도")
+
+for p in ax.patches :
+  ax.annotate(str(int(p.get_height())), (p.get_x() + p.get_width() / 2.,p.get_height()), ha='center', va='center', xytext=(0, 9), textcoords = 'offset points')
+
+plt.figure(figsize=(50, 6))
+ax = sns.barplot(data=df, x='범죄중분류', y="전라도")
+
+for p in ax.patches :
+  ax.annotate(str(int(p.get_height())), (p.get_x() + p.get_width() / 2.,p.get_height()), ha='center', va='center', xytext=(0, 9), textcoords = 'offset points')
+
+plt.figure(figsize=(50, 6))
+ax = sns.barplot(data=df, x='범죄중분류', y="경상도")
+
+for p in ax.patches :
+  ax.annotate(str(int(p.get_height())), (p.get_x() + p.get_width() / 2.,p.get_height()), ha='center', va='center', xytext=(0, 9), textcoords = 'offset points')
+
+plt.figure(figsize=(50, 6))
+ax = sns.barplot(data=df, x='범죄중분류', y="제주도")
+
+for p in ax.patches :
+  ax.annotate(str(int(p.get_height())), (p.get_x() + p.get_width() / 2.,p.get_height()), ha='center', va='center', xytext=(0, 9), textcoords = 'offset points')
+
+-------------------------------------------------------------------------------------------------------------
+
